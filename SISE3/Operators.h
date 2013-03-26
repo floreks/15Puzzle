@@ -1,75 +1,118 @@
 #ifndef OPERATORS_H
 #define OPERATORS_H
 
-#include <bitset>
 #include <vector>
 #include <cmath>
+#include <Node3.h>
 
-typedef bitset<4> element;
 using namespace std;
 
-vector<element> up(int pos, vector<element>&s)
+bool exists(Node3 node, vector<Node3> nodes)
 {
-    vector<element>result;
-    static int a = pos - (int)sqrt(s.size());
-    if(a < 0)
-        return result;
-
-    if(s[a] != 0)
-        return result;
-
-    result = s;
-    result[pos] = 0;
-    result[a] = s[pos];
-    return result;
+    for(int i=0; i<nodes.size(); i++)
+    {
+        if(node->equals(nodes[i])) return true;
+    }
+    return false;
 }
 
-vector<element> down(int pos, vector<element>&s)
+void tryMoveUp(Node3 *currentNode, vector<Node3> &nodes)
 {
-    vector<element>result;
-    static int a = pos + (int)sqrt(s.size());
-    if(a > s.size())
-        return result;
+    // wczytuje i sprawdzam pozycje pustego elementu
+    int zeroIndex = currentNode->getZeroIndex();
+    if(zeroIndex>8 || zeroIndex<0) return;
 
-    if(s[a] != 0)
-        return result;
+    // obliczam i sprawdzam pozycje docelowa
+    int targetIndex = zeroIndex - 3;
+    if(targetIndex<0) return;
 
-    result = s;
-    result[pos] = 0;
-    result[a] = s[pos];
-    return result;
+    // tworze nowy wezel ze zmienionymi na bazie obecnego
+    Node3 newNode;
+    newNode.setValues(currentNode->getValuesVect());
+
+    // zamieniam miejscami pusty element z elementem docelowym (nad nim)
+    newNode.setValue(currentNode->getValue(targetIndex),zeroIndex);
+    newNode.setValue(0,targetIndex);
+
+    // jesli utworzony wezel jest niepowtarzalny
+    if(!exists(newNode,nodes))
+    {
+        // jako poprzednik nowego ustawiamy obecny
+        newNode.addPredecessor(currentNode);
+
+        // i nawzajem
+        currentNode->addSuccessor(&newNode);
+
+        // dodajemy nowy wezel do listy wezlow
+        nodes.push_back(newNode);
+    }
+    else return;
 }
 
-vector<element> left(int pos, vector<element>&s)
+void tryMoveDown(Node3 *currentNode, vector<Node3> &nodes)
 {
-    vector<element>result;
-    static int a = pos - 1;
-    if(pos % (int)sqrt(s.size()) == 0)
-        return result;
+    int zeroIndex = currentNode->getZeroIndex();
+    if(zeroIndex>8 || zeroIndex<0) return;
 
-    if(s[a] != 0)
-        return result;
+    int targetIndex = zeroIndex + 3;
+    if(targetIndex>8) return;
 
-    result = s;
-    result[pos] = 0;
-    result[a] = s[pos];
-    return result;
+    Node3 newNode;
+    newNode.setValues(currentNode->getValuesVect());
+    newNode.setValue(currentNode->getValue(targetIndex),zeroIndex);
+    newNode.setValue(0,targetIndex);
+
+    if(!exists(newNode,nodes))
+    {
+        newNode.addPredecessor(currentNode);
+        currentNode->addSuccessor(&newNode);
+        nodes.push_back(newNode);
+    }
+    else return;
 }
 
-vector<element> right(int pos, vector<element>&s)
+void tryMoveLeft(Node3 *currentNode, vector<Node3> &nodes)
 {
-    vector<element>result;
-    static int a = pos + 1;
-    if(pos % (int)sqrt(s.size()) == (int)sqrt(s.size())-1)
-        return result;
+    int zeroIndex = currentNode->getZeroIndex();
+    if(zeroIndex>8 || zeroIndex<0) return;
 
-    if(s[a] != 0)
-        return result;
+    int targetIndex = zeroIndex - 1;
+    if(targetIndex<0) return;
 
-    result = s;
-    result[pos] = 0;
-    result[a] = s[pos];
-    return result;
+    Node3 newNode;
+    newNode.setValues(currentNode->getValuesVect());
+    newNode.setValue(currentNode->getValue(targetIndex),zeroIndex);
+    newNode.setValue(0,targetIndex);
+
+    if(!exists(newNode,nodes))
+    {
+        newNode.addPredecessor(currentNode);
+        currentNode->addSuccessor(&newNode);
+        nodes.push_back(newNode);
+    }
+    else return;
+}
+
+void tryMoveRight(Node3 *currentNode, vector<Node3> &nodes)
+{
+    int zeroIndex = currentNode->getZeroIndex();
+    if(zeroIndex>8 || zeroIndex<0) return;
+
+    int targetIndex = zeroIndex + 1;
+    if(targetIndex>8) return;
+
+    Node3 newNode;
+    newNode.setValues(currentNode->getValuesVect());
+    newNode.setValue(currentNode->getValue(targetIndex),zeroIndex);
+    newNode.setValue(0,targetIndex);
+
+    if(!exists(newNode,nodes))
+    {
+        newNode.addPredecessor(currentNode);
+        currentNode->addSuccessor(&newNode);
+        nodes.push_back(newNode);
+    }
+    else return;
 }
 
 #endif // OPERATORS_H

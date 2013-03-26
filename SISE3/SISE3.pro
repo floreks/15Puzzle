@@ -17,9 +17,9 @@ TEMPLATE = app
 
 SOURCES += main.cpp \
     graph.cpp \
-    node.cpp
+    Node3.cpp
 
 HEADERS += \
     graph.h \
-    node.h \
-    Operators.h
+    Operators.h \
+    Node3.h
