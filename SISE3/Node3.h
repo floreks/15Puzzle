@@ -46,7 +46,7 @@ public:
 	 * ustawia na nowo zawartosc wierzcholka
 	 * @v - 9 elemntowy wektor (wraz z nowym stanem)
 	 */
-	void setValues(vector<int> &v);
+    void setValues(vector<int> v);
 
 	/*
 	 * Ustawia na pozycji index wartosc value
@@ -241,11 +241,20 @@ public:
 		this->successors.remove(successor);
 	}
 
+    void setVisited(bool v){
+        visited=v;
+    }
+
+    bool getVisited(){
+        return visited;
+    }
+
 private:
 	void init();
 	void setNewContent(int *ptr);
 	void setNewContent(vector<int> &v);
 
+    bool visited;
 	LL content;
 	LL maski[9];
 	list<Node3*> successors;

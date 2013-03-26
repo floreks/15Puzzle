@@ -11,7 +11,7 @@ bool exists(Node3 node, vector<Node3> nodes)
 {
     for(int i=0; i<nodes.size(); i++)
     {
-        if(node->equals(nodes[i])) return true;
+        if(node.equals(nodes[i])) return true;
     }
     return false;
 }
@@ -38,10 +38,10 @@ void tryMoveUp(Node3 *currentNode, vector<Node3> &nodes)
     if(!exists(newNode,nodes))
     {
         // jako poprzednik nowego ustawiamy obecny
-        newNode.addPredecessor(currentNode);
+        //newNode.addPredecessor(currentNode);
 
         // i nawzajem
-        currentNode->addSuccessor(&newNode);
+        //currentNode->addSuccessor(&newNode);
 
         // dodajemy nowy wezel do listy wezlow
         nodes.push_back(newNode);
@@ -64,8 +64,8 @@ void tryMoveDown(Node3 *currentNode, vector<Node3> &nodes)
 
     if(!exists(newNode,nodes))
     {
-        newNode.addPredecessor(currentNode);
-        currentNode->addSuccessor(&newNode);
+        //newNode.addPredecessor(currentNode);
+        //currentNode->addSuccessor(&newNode);
         nodes.push_back(newNode);
     }
     else return;
@@ -86,11 +86,15 @@ void tryMoveLeft(Node3 *currentNode, vector<Node3> &nodes)
 
     if(!exists(newNode,nodes))
     {
-        newNode.addPredecessor(currentNode);
-        currentNode->addSuccessor(&newNode);
+
+        //newNode.addPredecessor(currentNode);
+        //currentNode->addSuccessor(&newNode);
         nodes.push_back(newNode);
     }
-    else return;
+    else
+    {
+        return;
+    }
 }
 
 void tryMoveRight(Node3 *currentNode, vector<Node3> &nodes)
@@ -108,8 +112,8 @@ void tryMoveRight(Node3 *currentNode, vector<Node3> &nodes)
 
     if(!exists(newNode,nodes))
     {
-        newNode.addPredecessor(currentNode);
-        currentNode->addSuccessor(&newNode);
+        //newNode.addPredecessor(currentNode);
+        //currentNode->addSuccessor(&newNode);
         nodes.push_back(newNode);
     }
     else return;
