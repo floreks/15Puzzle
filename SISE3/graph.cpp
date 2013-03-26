@@ -32,16 +32,16 @@ void Graph::create()
             if((*it).getVisited()) continue;
 
             tryMoveUp(&(*it),nodes);
-            tryMoveDown(&(*it),nodes);
-            //tryMoveLeft(&(*it),nodes);
+            //tryMoveDown(&(*it),nodes);
+            tryMoveLeft(&(*it),nodes);
             //tryMoveRight(&(*it),nodes);
 
-            if(nodes.size()==3)
+            //if(nodes.size()==3)
                 end = true;
 
             (*it).setVisited(true);
         }
-    } while(!end); // obsluzyc przypadek bez rozwiazania
+    } while(!end);
 
     for(int i=0; i<nodes.size(); i++) cout << nodes[i] << endl << endl;
 }

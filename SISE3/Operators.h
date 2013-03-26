@@ -38,10 +38,10 @@ void tryMoveUp(Node3 *currentNode, vector<Node3> &nodes)
     if(!exists(newNode,nodes))
     {
         // jako poprzednik nowego ustawiamy obecny
-        //newNode.addPredecessor(currentNode);
+        newNode.addPredecessor(currentNode);
 
         // i nawzajem
-        //currentNode->addSuccessor(&newNode);
+        currentNode->addSuccessor(&newNode);
 
         // dodajemy nowy wezel do listy wezlow
         nodes.push_back(newNode);
@@ -64,8 +64,8 @@ void tryMoveDown(Node3 *currentNode, vector<Node3> &nodes)
 
     if(!exists(newNode,nodes))
     {
-        //newNode.addPredecessor(currentNode);
-        //currentNode->addSuccessor(&newNode);
+        newNode.addPredecessor(currentNode);
+        currentNode->addSuccessor(&newNode);
         nodes.push_back(newNode);
     }
     else return;
@@ -75,9 +75,9 @@ void tryMoveLeft(Node3 *currentNode, vector<Node3> &nodes)
 {
     int zeroIndex = currentNode->getZeroIndex();
     if(zeroIndex>8 || zeroIndex<0) return;
+    if(zeroIndex % 3 == 0) return;
 
     int targetIndex = zeroIndex - 1;
-    if(targetIndex<0) return;
 
     Node3 newNode;
     newNode.setValues(currentNode->getValuesVect());
@@ -86,9 +86,8 @@ void tryMoveLeft(Node3 *currentNode, vector<Node3> &nodes)
 
     if(!exists(newNode,nodes))
     {
-
-        //newNode.addPredecessor(currentNode);
-        //currentNode->addSuccessor(&newNode);
+        newNode.addPredecessor(currentNode);
+        currentNode->addSuccessor(&newNode);
         nodes.push_back(newNode);
     }
     else
@@ -101,9 +100,9 @@ void tryMoveRight(Node3 *currentNode, vector<Node3> &nodes)
 {
     int zeroIndex = currentNode->getZeroIndex();
     if(zeroIndex>8 || zeroIndex<0) return;
+    if(zeroIndex % 3 == 2) return;
 
     int targetIndex = zeroIndex + 1;
-    if(targetIndex>8) return;
 
     Node3 newNode;
     newNode.setValues(currentNode->getValuesVect());
@@ -112,8 +111,8 @@ void tryMoveRight(Node3 *currentNode, vector<Node3> &nodes)
 
     if(!exists(newNode,nodes))
     {
-        //newNode.addPredecessor(currentNode);
-        //currentNode->addSuccessor(&newNode);
+        newNode.addPredecessor(currentNode);
+        currentNode->addSuccessor(&newNode);
         nodes.push_back(newNode);
     }
     else return;
