@@ -12,5 +12,6 @@ int main()
 {
     Graph g;
     g.create();
+    g.printPath();
     return 0;
 }

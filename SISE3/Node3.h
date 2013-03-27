@@ -249,11 +249,15 @@ public:
         return visited;
     }
 
+    int getNr()const{return nr;}
+    void setNr(int nr){this->nr = nr;}
+
 private:
 	void init();
 	void setNewContent(int *ptr);
 	void setNewContent(vector<int> &v);
 
+    int nr;
     bool visited;
 	LL content;
 	LL maski[9];
