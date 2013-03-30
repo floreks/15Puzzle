@@ -10,6 +10,8 @@ Board::Board(vector<BYTE> tab)
         state.push_back(tab[i]);
     }
     assert(zeroPosition != 0xFFFF);
+    cost = 0;
+    totalCost = 0;
     sqrtSize = sqrt(state.size());
 }
 
@@ -110,6 +112,7 @@ int Board::manhattan()
             }
         }
     }
+    cost = sum;
     return sum;
 }
 
@@ -175,4 +178,9 @@ bool operator==(const Board &s1, const Board &s2)
         if(s1.state[i] != s2.state[i])
             return 0;
     return 1;
+}
+
+bool operator<(const Board &s1, const Board &s2)
+{
+    return 0;
 }

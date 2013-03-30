@@ -21,8 +21,11 @@ class Board
 private:
 
     vector<BYTE>state;
+    vector<Board>successors;
     WORD zeroPosition;
     WORD sqrtSize;
+    WORD cost;
+    WORD totalCost;
 
     bool isZeroRowEven();
     Board moveUp();
@@ -44,12 +47,21 @@ public:
     bool isEmpty()const{return state.empty()==1;}
     void clear(){state.clear();}
     int getSize()const{return state.size();}
+    void setCost(WORD cost){this->cost = cost;}
+    WORD getCost()const{return cost;}
+    void setTotalCost(WORD cost){this->totalCost = cost;}
+    WORD getTotalCost()const{return totalCost;}
+    void addSuccessor(Board succ){successors.push_back(succ);}
+    void addSuccessors(vector<Board> succ){successors = succ;}
+
 
 protected:
 
     // Overloaded operators //
     friend QDebug operator<<(QDebug d, const Board &s);
     friend bool operator==(const Board &s1, const Board  &s2);
+    friend bool operator<(const Board &s1, const Board &s2);
+
     // -------------------- //
 };
 
