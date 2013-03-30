@@ -2,8 +2,9 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <Node3.h>
-#include <graph.h>
+#include <QApplication>
+#include "graph.h"
+#include <QDebug>
 
 namespace Ui {
 class MainWindow;
@@ -27,6 +28,8 @@ private slots:
 
     void on_pushButton_3_clicked();
 
+    void onGraphUpdate(int);
+
 private:
     Ui::MainWindow *ui;
     void drawValues(Node3 *node);
@@ -34,7 +37,7 @@ private:
     Graph g;
     bool firstRun;
     int tab[9];
-    int step;
+    unsigned int step;
     bool smartRand;
 };
 

@@ -2,11 +2,14 @@
 #define GRAPH_H
 
 #include "Node3.h"
+#include <QObject>
+#include "QThread"
 
 typedef void (*fPtr)(Node3 & , vector<Node3*> &);
 
-class Graph
+class Graph : public QObject
 {
+    Q_OBJECT
 private:
     vector<Node3*> nodes;
     Node3 *endNode;
@@ -15,9 +18,11 @@ private:
     void explore(Node3 *n);
     int *tab;
 public:
-    Graph();
+    Graph(QObject *parent=0);
     void create(int tab[9]);
     vector<Node3*> getPath();
+signals:
+    void update(int);
 };
 
 #endif // GRAPH_H

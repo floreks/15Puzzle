@@ -1,14 +1,15 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "graph.h"
-#include "Node3.h"
 #include <ctime>
 #include <QProgressDialog>
+#include "GUIMove.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
     this->setWindowTitle("Fifteen");
+    ui->progressBar->setValue(0);
+    ui->progressBar->setTextVisible(0);
 
     //zmiana wymiarow planszy i jej parametrow
     ui->tableWidget->setShowGrid(true);
@@ -108,16 +109,21 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::onGraphUpdate(int arg)
+{
+    ui->label_3->setText("Graph size: " + QString::number(arg));
+}
+
 void MainWindow::on_pushButton_clicked()
 {
     // TODO trzeba by to jeszcze zamknac po stworzeniu grafu
-
-    //QProgressDialog* pd = new QProgressDialog("Solving in progress...",0,0,0);
-    //pd->setWindowTitle("Solving");
-    //pd->setMinimumDuration(1000);
-    //pd->exec();
-
+    ui->progressBar->setMaximum(0);
+    ui->progressBar->setMinimum(0);
+    connect(&g,SIGNAL(update(int)),ui->progressBar,SLOT(repaint()));
+    connect(&g,SIGNAL(update(int)),this,SLOT(onGraphUpdate(int)));
     g.create(tab);
+    ui->progressBar->setMaximum(1);
+
 
     ui->pushButton->setDisabled(true);
     ui->pushButton_4->setDisabled(true);
@@ -137,7 +143,7 @@ void MainWindow::on_pushButton_4_clicked()
 {
     srand(time(NULL));
     int temp = 0;
-    int r1, r2, method, index;
+    int r1, r2, index = 0;
 
     if(!smartRand)
     {
@@ -152,37 +158,18 @@ void MainWindow::on_pushButton_4_clicked()
     }
     else
     {
-        // nie kazdy randomize dziala - dodac while(moved)
-        for(int i=0; i<1; i++) // mozliwa zmiana liczby losowan - dodac do gui?
+        // szukamy 0
+        for(int i=0;i<9;i++)
+            if(tab[i] == 0)
+                index = i;
+        int r;
+        for(int i=0;i<25;i++)
         {
-            //index = rand()%9;
-            for(int i=0; i<9; i++) if(tab[i]==0) index = i; // gdy przesuwamy zero latwiej znalezc rozwiazanie
-            method = rand()%4;
-
-            if(method==0 && index>2) // w gore
-            {
-                temp = tab[index];
-                tab[index] = tab[index-3];
-                tab[index-3] = temp;
-            }
-            if(method==1 && index<6) // w dol
-            {
-                temp = tab[index];
-                tab[index] = tab[index+3];
-                tab[index+3] = temp;
-            }
-            if(method==2 && index%3!=0) // w lewo
-            {
-                temp = tab[index];
-                tab[index] = tab[index-1];
-                tab[index-1] = temp;
-            }
-            if(method==3 && index%3!=2) // w prawo
-            {
-                temp = tab[index];
-                tab[index] = tab[index+1];
-                tab[index+1] = temp;
-            }
+            r = rand()%4;
+            if(r == 0)up(tab,index);
+            if(r == 1)left(tab,index);
+            if(r == 2)down(tab,index);
+            if(r == 3)right(tab,index);
         }
     }
 
@@ -214,8 +201,8 @@ void MainWindow::on_pushButton_2_clicked()
 
 void MainWindow::on_checkBox_stateChanged(int arg1)
 {
-    if(ui->checkBox->isChecked()) smartRand = true;
-    else smartRand = false;
+    if(ui->checkBox->isChecked()) smartRand = arg1-1;
+    else smartRand = arg1;
 }
 
 void MainWindow::on_pushButton_3_clicked()

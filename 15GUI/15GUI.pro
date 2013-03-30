@@ -4,9 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
-
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+QT       += core gui widgets
 
 TARGET = 15GUI
 TEMPLATE = app
@@ -20,6 +18,7 @@ SOURCES += main.cpp\
 HEADERS  += mainwindow.h \
     Operators.h \
     Node3.h \
-    graph.h
+    graph.h \
+    GUIMove.h
 
 FORMS    += mainwindow.ui

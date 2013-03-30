@@ -2,7 +2,7 @@
 #include "Operators.h"
 #include "Node3.h"
 
-Graph::Graph()
+Graph::Graph(QObject *parent) : QObject(parent)
 {
     vector<int> endValues;
     for(int i=1; i<9; i++) endValues.push_back(i);
@@ -22,6 +22,7 @@ void Graph::create(int tab[9])
     {
         for(int i=0;i<nodes.size();i++)
         {
+            emit update(nodes.size());
             if(nodes[i]->getVisited()) continue;
 
             moveUp(*nodes[i],nodes);
@@ -52,7 +53,6 @@ void Graph::create(int tab[9])
             nodes[i]->setVisited(true);
         }
     } while(!end);
-
 }
 
 void Graph::explore(Node3 *n) // DFS
