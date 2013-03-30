@@ -4,14 +4,6 @@
 #include "board.h"
 #include <map>
 
-struct comparator
-{
-    bool operator()(const Board &s1, const Board &s2)
-    {
-        return (s1 == s2);
-    }
-};
-
 class Solver
 {
 private:
@@ -20,7 +12,8 @@ private:
     vector<Board>path;
     int getLowestCost(vector<Board>&states);
     bool exists(vector<Board>&states, const Board &board);
-    void constructPath(map<Board, Board, comparator> &cameFrom, Board &node);
+    void constructPath(map<Board, Board> &cameFrom, Board &node);
+    map<Board,Board>::iterator find(map<Board, Board> &cameFrom, Board &node);
 public:
     Solver(Board start);
     bool solve();

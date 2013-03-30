@@ -3,7 +3,7 @@
 Board::Board(vector<BYTE> tab)
 {
     zeroPosition = 0xFFFF;
-    for(int i=0;i<tab.size();i++)
+    for(WORD i=0;i<tab.size();i++)
     {
         if(tab[i] == 0)
             zeroPosition = i;
@@ -174,7 +174,7 @@ QDebug operator<<(QDebug d, const Board &s)
 
 bool operator==(const Board &s1, const Board &s2)
 {
-    for(int i=0;i<s1.state.size();i++)
+    for(WORD i=0;i<s1.state.size();i++)
         if(s1.state[i] != s2.state[i])
             return 0;
     return 1;
@@ -182,5 +182,5 @@ bool operator==(const Board &s1, const Board &s2)
 
 bool operator<(const Board &s1, const Board &s2)
 {
-    return 0;
+    return !(s1 == s2);
 }

@@ -21,7 +21,6 @@ class Board
 private:
 
     vector<BYTE>state;
-    vector<Board>successors;
     WORD zeroPosition;
     WORD sqrtSize;
     WORD cost;
@@ -32,6 +31,7 @@ private:
     Board moveDown();
     Board moveLeft();
     Board moveRight();
+    int manhattan();
 public:
 
     // Constructors && destructor //
@@ -42,7 +42,6 @@ public:
 
     bool swapElements(int index, int index2);
     bool isSolvable();
-    int manhattan();
     vector<Board> neighbors();
     bool isEmpty()const{return state.empty()==1;}
     void clear(){state.clear();}
@@ -51,8 +50,6 @@ public:
     WORD getCost()const{return cost;}
     void setTotalCost(WORD cost){this->totalCost = cost;}
     WORD getTotalCost()const{return totalCost;}
-    void addSuccessor(Board succ){successors.push_back(succ);}
-    void addSuccessors(vector<Board> succ){successors = succ;}
 
 
 protected:

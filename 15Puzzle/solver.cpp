@@ -4,7 +4,7 @@ Solver::Solver(Board start)
 {
     startState = start;
     vector<BYTE>state(start.getSize());
-    for(int i=0;i<state.size()-1;i++)
+    for(WORD i=0;i<state.size()-1;i++)
     {
         state[i] = i+1;
     }
@@ -16,7 +16,7 @@ int Solver::getLowestCost(vector<Board> &states)
 {
     int pos = 0;
     int min = states[0].getCost();
-    for(int i=1;i<states.size();i++)
+    for(WORD i=1;i<states.size();i++)
         if(min > states[i].getCost())
         {
             min = states[i].getCost();
@@ -33,31 +33,34 @@ bool Solver::exists(vector<Board> &states,const Board &board)
     return 0;
 }
 
-void Solver::constructPath(map<Board, Board, comparator> &cameFrom, Board &node)
+map<Board,Board>::iterator Solver::find(map<Board,Board> &cameFrom, Board &node)
 {
     map<Board,Board>::iterator it;
-    Board lookFor;
-    it = cameFrom.find(node);
+    for(it = cameFrom.begin(); it != cameFrom.end(); it++)
+        if(it->first == node)
+            return it;
+    return cameFrom.end();
+}
+
+void Solver::constructPath(map<Board, Board> &cameFrom, Board &node)
+{
+    map<Board,Board>::iterator it;
+    it = find(cameFrom,node);
     if(it != cameFrom.end())
     {
-        qDebug() << it->first << it->second;
         if(!exists(path,it->first))
             path.push_back(it->first);
         if(!exists(path,it->second))
             path.push_back(it->second);
-        lookFor = it->second;
-        cameFrom.erase(it);
-        constructPath(cameFrom,lookFor);
+        constructPath(cameFrom,it->second);
     }
 }
 
 bool Solver::solve()
 {
-    //qDebug() << startState;
-    //qDebug() << endState;
     vector<Board>openList;
     vector<Board>closedList;
-    map<Board,Board,comparator>cameFrom;
+    map<Board,Board>cameFrom;
     WORD lowestCostPos,tentGScore;
     startState.setTotalCost(0);
     startState.setCost(abs(startState.getCost() - endState.getCost()));
@@ -71,8 +74,8 @@ bool Solver::solve()
             current = openList[lowestCostPos];
             if(current == endState)
             {
+                qDebug() << "Graph size: " << cameFrom.size();
                 constructPath(cameFrom,endState);
-                qDebug() << "End";
                 break;
             }
             openList.erase(openList.begin()+lowestCostPos);
@@ -86,22 +89,15 @@ bool Solver::solve()
 
                 if(!exists(openList,i) || tentGScore < i.getCost())
                 {
-                    //qDebug() << i << '\n' << current << "\n----------------\n";
                     cameFrom.insert(pair<Board,Board>(i,current));
                     i.setTotalCost(tentGScore);
                     i.setCost(tentGScore + abs(i.getCost()-endState.getCost()));
                     openList.push_back(i);
                     if(i == endState)
-                    {
-                        qDebug() << "Inserting end node\n" << i;
                         break;
-                    }
                 }
             }
         }
-        map<Board,Board>::iterator it;
-        for(it = cameFrom.begin(); it != cameFrom.end(); it++)
-            qDebug() << "Key:\n" << it->first << " Second:\n" << it->second;
         return true;
     }
     else
