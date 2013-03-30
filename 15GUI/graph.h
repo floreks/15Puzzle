@@ -4,6 +4,7 @@
 #include "Node3.h"
 #include <QObject>
 #include "QThread"
+#include <QDebug>
 
 typedef void (*fPtr)(Node3 & , vector<Node3*> &);
 

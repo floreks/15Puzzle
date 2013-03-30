@@ -26,11 +26,11 @@ Node3 *getNode(Node3 *n, vector<Node3*>&nodes)
     return NULL;
 }
 
-void moveUp(Node3 &node, vector<Node3*>&nodes)
+bool moveUp(Node3 &node, vector<Node3*>&nodes)
 {
     int zeroIndex = node.getZeroIndex();
     if(zeroIndex > 5)
-        return;
+        return 0;
 
     Node3 *n = new Node3(node.getValuesTab());
     int index = zeroIndex + 3;
@@ -51,13 +51,14 @@ void moveUp(Node3 &node, vector<Node3*>&nodes)
         node.addSuccessor(n2);
         delete n;
     }
+    return 1;
 }
 
-void moveDown(Node3 &node, vector<Node3*>&nodes)
+bool moveDown(Node3 &node, vector<Node3*>&nodes)
 {
     int zeroIndex = node.getZeroIndex();
     if(zeroIndex < 3)
-        return;
+        return 0;
 
     Node3 *n = new Node3(node.getValuesTab());
     int index = zeroIndex - 3;
@@ -78,13 +79,14 @@ void moveDown(Node3 &node, vector<Node3*>&nodes)
         node.addSuccessor(n2);
         delete n;
     }
+    return 1;
 }
 
-void moveRight(Node3 &node, vector<Node3*>&nodes)
+bool moveRight(Node3 &node, vector<Node3*>&nodes)
 {
     int zeroIndex = node.getZeroIndex();
     if(zeroIndex % 3 == 0)
-        return;
+        return 0;
 
     Node3 *n = new Node3(node.getValuesTab());
     int index = zeroIndex - 1;
@@ -105,13 +107,14 @@ void moveRight(Node3 &node, vector<Node3*>&nodes)
         node.addSuccessor(n2);
         delete n;
     }
+    return 1;
 }
 
-void moveLeft(Node3 &node, vector<Node3*>&nodes)
+bool moveLeft(Node3 &node, vector<Node3*>&nodes)
 {
     int zeroIndex = node.getZeroIndex();
     if(zeroIndex % 3 == 2)
-        return;
+        return 0;
 
     Node3 *n = new Node3(node.getValuesTab());
     int index = zeroIndex + 1;
@@ -132,6 +135,7 @@ void moveLeft(Node3 &node, vector<Node3*>&nodes)
         node.addSuccessor(n2);
         delete n;
     }
+    return 1;
 }
 
 #endif // OPERATORS_H
