@@ -15,11 +15,11 @@ Solver::Solver(Board start)
 int Solver::getLowestCost(vector<Board> &states)
 {
     int pos = 0;
-    int min = states[0].getCost();
+    int min = states[0].manhattan();
     for(WORD i=1;i<states.size();i++)
-        if(min > states[i].getCost())
+        if(min > states[i].manhattan())
         {
-            min = states[i].getCost();
+            min = states[i].manhattan();
             pos = i;
         }
     return pos;

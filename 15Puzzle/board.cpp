@@ -10,9 +10,22 @@ Board::Board(vector<BYTE> tab)
         state.push_back(tab[i]);
     }
     assert(zeroPosition != 0xFFFF);
-    cost = 0;
+    cost = manhattan();
     totalCost = 0;
     sqrtSize = sqrt(state.size());
+}
+
+Board::Board(const Board &board)
+{
+    this->zeroPosition = board.zeroPosition;
+    this->cost = board.cost;
+    this->totalCost = board.totalCost;
+    this->state = board.state;
+    this->sqrtSize = board.sqrtSize;
+}
+
+Board::Board()
+{
 }
 
 // ----------- OPERATORS --------------- //
@@ -112,7 +125,6 @@ int Board::manhattan()
             }
         }
     }
-    cost = sum;
     return sum;
 }
 

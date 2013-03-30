@@ -31,15 +31,15 @@ private:
     Board moveDown();
     Board moveLeft();
     Board moveRight();
-    int manhattan();
 public:
 
     // Constructors && destructor //
     Board(vector<BYTE> tab);
-    Board(){}
+    Board(const Board &board);
+    Board();
     ~Board(){}
     // -------------------------- //
-
+    int manhattan();
     bool swapElements(int index, int index2);
     bool isSolvable();
     vector<Board> neighbors();
