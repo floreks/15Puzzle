@@ -10,6 +10,7 @@ private:
     Board endState;
     Board startState;
     vector<Board>path;
+
     int getLowestCost(vector<Board>&states);
     bool exists(vector<Board>&states, const Board &board);
     void constructPath(map<Board, Board> &cameFrom, Board &node);

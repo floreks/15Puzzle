@@ -12,10 +12,6 @@ using namespace std;
 typedef unsigned char BYTE;
 typedef unsigned short int WORD;
 
-/*
- * For testing there are no pointers in code. They need to be added in order to create proper graph.
- */
-
 class Board
 {
 private:

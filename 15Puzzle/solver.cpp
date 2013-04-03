@@ -45,19 +45,18 @@ map<Board,Board>::iterator Solver::find(map<Board,Board> &cameFrom, Board &node)
 void Solver::constructPath(map<Board, Board> &cameFrom, Board &node)
 {
     map<Board,Board>::iterator it;
-    it = find(cameFrom,node);
-    if(it != cameFrom.end())
+    Board tmp(node);
+    path.push_back(endState);
+    while((it = find(cameFrom,tmp)) != cameFrom.end())
     {
-        if(!exists(path,it->first))
-            path.push_back(it->first);
-        if(!exists(path,it->second))
-            path.push_back(it->second);
-        constructPath(cameFrom,it->second);
+        path.push_back(it->second);
+        tmp = it->second;
     }
 }
 
 bool Solver::solve()
 {
+    bool endFound = false;
     vector<Board>openList;
     vector<Board>closedList;
     map<Board,Board>cameFrom;
@@ -72,7 +71,7 @@ bool Solver::solve()
         {
             lowestCostPos = getLowestCost(openList);
             current = openList[lowestCostPos];
-            if(current == endState)
+            if(current == endState || endFound)
             {
                 qDebug() << "Graph size: " << cameFrom.size();
                 constructPath(cameFrom,endState);
@@ -94,7 +93,10 @@ bool Solver::solve()
                     i.setCost(tentGScore + abs(i.getCost()-endState.getCost()));
                     openList.push_back(i);
                     if(i == endState)
+                    {
+                        endFound = 1;
                         break;
+                    }
                 }
             }
         }
