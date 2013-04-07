@@ -21,6 +21,7 @@ private:
     WORD sqrtSize;
     WORD cost;
     WORD totalCost;
+    bool visited;
 
     bool isZeroRowEven();
     Board moveUp();
@@ -46,6 +47,8 @@ public:
     WORD getCost()const{return cost;}
     void setTotalCost(WORD cost){this->totalCost = cost;}
     WORD getTotalCost()const{return totalCost;}
+    bool isVisited()const{return visited;}
+    void setVisited(bool visited){this->visited = visited;}
 
 
 protected:

@@ -17,7 +17,10 @@ private:
     map<Board,Board>::iterator find(map<Board, Board> &cameFrom, Board &node);
 public:
     Solver(Board start);
-    bool solve();
+    bool solveAStar();
+    bool solveIDAStart();
+    bool solveDFS();
+    bool solveBFS();
     vector<Board> getPath()const{return path;}
 };
 

@@ -47,14 +47,56 @@ void Solver::constructPath(map<Board, Board> &cameFrom, Board &node)
     map<Board,Board>::iterator it;
     Board tmp(node);
     path.push_back(endState);
-    while((it = find(cameFrom,tmp)) != cameFrom.end())
+    while((it = find(cameFrom,tmp)) != cameFrom.end() && !(it->first == startState))
     {
         path.push_back(it->second);
         tmp = it->second;
     }
 }
 
-bool Solver::solve()
+bool Solver::solveDFS()
+{
+    bool endFound = false;
+    vector<Board>openList; // list to search
+    map<Board,Board>cameFrom; // path
+    openList.push_back(startState);
+    Board current;
+    if(startState.isSolvable())
+    {
+        while(openList.empty() == 0)
+        {
+            current = openList.front();
+            if(exists(openList,endState))
+            {
+                qDebug() << "Graph size: " << cameFrom.size();
+                constructPath(cameFrom,endState);
+                break;
+            }
+            openList.erase(openList.begin());
+            for(Board &i : current.neighbors())
+            {
+                if(!exists(openList,i))
+                {
+                    //qDebug() << "Curr:\n" << current << endl << i;
+                    cameFrom.insert(pair<Board,Board>(i,current));
+                    openList.push_back(i);
+                    if(i == endState)
+                    {
+                        endFound = 1;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+}
+
+bool Solver::solveBFS()
+{
+
+}
+
+bool Solver::solveAStar()
 {
     bool endFound = false;
     vector<Board>openList;
