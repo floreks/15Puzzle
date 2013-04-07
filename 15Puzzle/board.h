@@ -2,10 +2,9 @@
 #define BOARD_H
 
 #include <vector>
-#include <bitset>
-#include <QDebug>
 #include <cmath>
 #include <assert.h>
+#include <ostream>
 
 using namespace std;
 
@@ -21,13 +20,14 @@ private:
     WORD sqrtSize;
     WORD cost;
     WORD totalCost;
-    bool visited;
+    char position;
 
     bool isZeroRowEven();
     Board moveUp();
     Board moveDown();
     Board moveLeft();
     Board moveRight();
+    void setPositon(char pos){position = pos;}
 public:
 
     // Constructors && destructor //
@@ -47,14 +47,15 @@ public:
     WORD getCost()const{return cost;}
     void setTotalCost(WORD cost){this->totalCost = cost;}
     WORD getTotalCost()const{return totalCost;}
-    bool isVisited()const{return visited;}
-    void setVisited(bool visited){this->visited = visited;}
+    void setBoard(vector<BYTE> tab);
+    char getPosition()const{return position;}
 
 
 protected:
 
     // Overloaded operators //
-    friend QDebug operator<<(QDebug d, const Board &s);
+    //friend QDebug operator<<(QDebug d, const Board &s);
+    friend ostream &operator<<(ostream &os, const Board &s);
     friend bool operator==(const Board &s1, const Board  &s2);
     friend bool operator<(const Board &s1, const Board &s2);
 

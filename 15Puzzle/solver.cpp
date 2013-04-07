@@ -12,6 +12,18 @@ Solver::Solver(Board start)
     endState = state;
 }
 
+void Solver::setBoard(Board start)
+{
+    startState = start;
+    vector<BYTE>state(start.getSize());
+    for(WORD i=0;i<state.size()-1;i++)
+    {
+        state[i] = i+1;
+    }
+    state[state.size()-1] = 0;
+    endState = state;
+}
+
 int Solver::getLowestCost(vector<Board> &states)
 {
     int pos = 0;
@@ -47,17 +59,18 @@ void Solver::constructPath(map<Board, Board> &cameFrom, Board &node)
     map<Board,Board>::iterator it;
     Board tmp(node);
     path.push_back(endState);
-    while((it = find(cameFrom,tmp)) != cameFrom.end() && !(it->first == startState))
+    while((it = find(cameFrom,tmp)) != cameFrom.end())
     {
         path.push_back(it->second);
+        pathString.push_back(it->first.getPosition());
         tmp = it->second;
     }
 }
 
-bool Solver::solveDFS()
+bool Solver::solveBFS()
 {
-    bool endFound = false;
     vector<Board>openList; // list to search
+    vector<Board>closedList;
     map<Board,Board>cameFrom; // path
     openList.push_back(startState);
     Board current;
@@ -66,13 +79,50 @@ bool Solver::solveDFS()
         while(openList.empty() == 0)
         {
             current = openList.front();
-            if(exists(openList,endState))
+            if(openList.back() == endState)
             {
-                qDebug() << "Graph size: " << cameFrom.size();
+                //qDebug() << "Graph size: " << cameFrom.size();
                 constructPath(cameFrom,endState);
                 break;
             }
             openList.erase(openList.begin());
+            closedList.push_back(current);
+            for(Board &i : current.neighbors())
+            {
+                if(!exists(closedList,i))
+                {
+                    //qDebug() << "Curr:\n" << current << endl << i;
+                    cameFrom.insert(pair<Board,Board>(i,current));
+                    openList.push_back(i);
+                    if(i == endState)
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+        return 1;
+    }
+    return 0;
+}
+
+bool Solver::solveDFS()
+{
+    vector<Board>openList; // list to search
+    map<Board,Board>cameFrom; // path
+    openList.push_back(startState);
+    Board current;
+    if(startState.isSolvable())
+    {
+        while(openList.empty() == 0)
+        {
+            current = openList.back();
+            if(exists(openList,endState))
+            {
+                //qDebug() << "Graph size: " << cameFrom.size();
+                constructPath(cameFrom,endState);
+                break;
+            }
             for(Board &i : current.neighbors())
             {
                 if(!exists(openList,i))
@@ -82,18 +132,14 @@ bool Solver::solveDFS()
                     openList.push_back(i);
                     if(i == endState)
                     {
-                        endFound = 1;
                         break;
                     }
                 }
             }
         }
+        return 1;
     }
-}
-
-bool Solver::solveBFS()
-{
-
+    return 0;
 }
 
 bool Solver::solveAStar()
@@ -115,7 +161,7 @@ bool Solver::solveAStar()
             current = openList[lowestCostPos];
             if(current == endState || endFound)
             {
-                qDebug() << "Graph size: " << cameFrom.size();
+                //qDebug() << "Graph size: " << cameFrom.size();
                 constructPath(cameFrom,endState);
                 break;
             }

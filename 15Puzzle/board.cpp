@@ -13,14 +13,16 @@ Board::Board(vector<BYTE> tab)
     cost = manhattan();
     totalCost = 0;
     sqrtSize = sqrt(state.size());
+    position = 'S';
 }
 
 Board::Board(const Board &board)
 {
-    this->zeroPosition = board.zeroPosition;
+    this->position = board.position;
+    this->state = board.state;
     this->cost = board.cost;
     this->totalCost = board.totalCost;
-    this->state = board.state;
+    this->zeroPosition = board.zeroPosition;
     this->sqrtSize = board.sqrtSize;
 }
 
@@ -158,31 +160,51 @@ bool Board::isSolvable()
 vector<Board> Board::neighbors()
 {
     vector<Board>result;
-
-    Board tmp = moveUp();
-    if(!tmp.isEmpty())
-        result.push_back(tmp);
+    Board tmp;
     tmp = moveDown();
-    if(!tmp.isEmpty())
-        result.push_back(tmp);
-    tmp = moveLeft();
+    tmp.setPositon('G');
     if(!tmp.isEmpty())
         result.push_back(tmp);
     tmp = moveRight();
+    tmp.setPositon('L');
+    if(!tmp.isEmpty())
+        result.push_back(tmp);
+    tmp = moveUp();
+    tmp.setPositon('D');
+    if(!tmp.isEmpty())
+        result.push_back(tmp);
+    tmp = moveLeft();
+    tmp.setPositon('P');
     if(!tmp.isEmpty())
         result.push_back(tmp);
 
     return result;
 }
 
+void Board::setBoard(vector<BYTE> tab)
+{
+    zeroPosition = 0xFFFF;
+    for(WORD i=0;i<tab.size();i++)
+    {
+        if(tab[i] == 0)
+            zeroPosition = i;
+        state.push_back(tab[i]);
+    }
+    assert(zeroPosition != 0xFFFF);
+    cost = manhattan();
+    totalCost = 0;
+    sqrtSize = sqrt(state.size());
+    position = 'S';
+}
+
 // ----------------------------------------- //
 
-QDebug operator<<(QDebug d, const Board &s)
-{
-    for(WORD i=0;i<s.state.size();i++)
-        d.nospace() << static_cast<WORD>(s.state[i]) << (i%s.sqrtSize == s.sqrtSize-1 && i ? '\n' : ' ');
-    return d;
-}
+//QDebug operator<<(QDebug d, const Board &s)
+//{
+//    for(WORD i=0;i<s.state.size();i++)
+//        d.nospace() << static_cast<WORD>(s.state[i]) << (i%s.sqrtSize == s.sqrtSize-1 && i ? '\n' : ' ');
+//    return d;
+//}
 
 bool operator==(const Board &s1, const Board &s2)
 {
@@ -195,4 +217,12 @@ bool operator==(const Board &s1, const Board &s2)
 bool operator<(const Board &s1, const Board &s2)
 {
     return !(s1 == s2);
+}
+
+ostream &operator<<(ostream &os, const Board &s)
+{
+    for(WORD i=0;i<s.state.size();i++)
+            os << static_cast<WORD>(s.state[i]) << (i%s.sqrtSize == s.sqrtSize-1 && i ? '\n' : ' ');
+    os << endl;
+        return os;
 }
