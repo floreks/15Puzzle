@@ -1,21 +1,22 @@
 #include "board.h"
 #include "solver.h"
-#include <iostream>
 #include <cstring>
 #include <sstream>
 
 using namespace std;
 
-void printPath(vector<Board>path)
+void printPath(vector<Board> path)
 {
     for(int i=path.size()-1;i>=0;i--)
         cout << path[i];
+    cout << endl;
 }
 
 void printPath(string path)
 {
     for(int i=path.size()-1;i>=0;i--)
         cout << path[i];
+    cout << endl;
 }
 
 bool contains(string searchFor, string searched)
@@ -155,18 +156,51 @@ int main(int argc, char *argv[])
                     cerr << "Wrong order input.";
                 else
                 {
-                    cout << order;
+                    if(!contains(order,"LPDG"))
+                        cerr << "Wrong order input.";
+                    else
+                    {
+                        cin >> width >> height;
+                        boardSize = width * height;
+                        for(int i=0;i<boardSize;i++)
+                        {
+                            cin >> width;
+                            boardIn.push_back(width);
+                        }
+                        board.setBoard(boardIn);
+                        solver.setBoard(board);
+                        solver.solveIDFS();
+                        cout << endl;
+                        if(board.isSolvable())
+                        {
+                            cout << solver.getPath().size()-1 << '\n';
+                            printPath(solver.getPathString());
+                        }
+                        else
+                            cerr << -1;
+                    }
                 }
             }
         }
+        else if(argc == 2 && string(argv[1]) == "-help")
+        {
+            cout << "-b - BFS search\n"
+                    "-d - DFS search\n"
+                    "-i - IDFS search\n"
+                    "-a - A* search\n"
+                    "order - permutation of \"LPDG\""
+                    "heuristicID - 1 for manhattan heuristic, 2 for linear heuristic\n"
+                    "strategyID - 1,2";
+        }
+        else
+        {
+            cerr << "Wrong parameters.\nUSAGE:\n"
+                    "-b/--bfs order\n"
+                    "-d/--dfs order\n"
+                    "-i/--idfs order\n"
+                    "-a/--a strategyID heuristicID\n"
+                    "-help - more information";
+        }
+        return 0;
     }
-    else
-    {
-        cerr << "Wrong parameters.\nUSAGE:\n"
-                "-b/--bfs order - BFS search\n"
-                "-d/--dfs order - DFS search"
-                "-i/--idfs order - IDA* search\n"
-                "-a/--a strategyID heuristicID - A* search";
-    }
-    return 0;
 }

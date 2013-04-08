@@ -199,12 +199,12 @@ void Board::setBoard(vector<BYTE> tab)
 
 // ----------------------------------------- //
 
-//QDebug operator<<(QDebug d, const Board &s)
-//{
-//    for(WORD i=0;i<s.state.size();i++)
-//        d.nospace() << static_cast<WORD>(s.state[i]) << (i%s.sqrtSize == s.sqrtSize-1 && i ? '\n' : ' ');
-//    return d;
-//}
+QDebug operator<<(QDebug d, const Board &s)
+{
+    for(WORD i=0;i<s.state.size();i++)
+        d.nospace() << static_cast<WORD>(s.state[i]) << (i%s.sqrtSize == s.sqrtSize-1 && i ? '\n' : ' ');
+    return d;
+}
 
 bool operator==(const Board &s1, const Board &s2)
 {

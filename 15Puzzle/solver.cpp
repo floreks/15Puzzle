@@ -1,4 +1,5 @@
 #include "solver.h"
+#include <QDebug>
 
 Solver::Solver(Board start)
 {
@@ -10,6 +11,7 @@ Solver::Solver(Board start)
     }
     state[state.size()-1] = 0;
     endState = state;
+    IDFSend = false;
 }
 
 void Solver::setBoard(Board start)
@@ -64,11 +66,52 @@ void Solver::constructPath(map<Board, Board> &cameFrom, Board &node)
         path.push_back(it->second);
         pathString.push_back(it->first.getPosition());
         tmp = it->second;
+        cameFrom.erase(it);
+    }
+}
+
+Board Solver::DLS(Board &node, Board &endNode, WORD depth)
+{
+    Board board;
+    if(node == endState && depth == 0)
+    {
+        IDFSend = true;
+        return node;
+    }
+    else if(depth > 0)
+        for(Board &i : node.neighbors())
+        {
+            linkedList.insert(pair<Board,Board>(i,node));
+            DLS(i,endNode,depth-1);
+        }
+    if(IDFSend)
+        return endNode;
+    return board;
+}
+
+bool Solver::solveIDFS()
+{
+    path.clear();
+    pathString.clear();
+    linkedList.clear();
+    WORD depth = 0;
+    Board result;
+    while(depth < 8)
+    {
+        result = DLS(startState,endState,depth);
+        if(result == endState && !result.isEmpty())
+        {
+            constructPath(linkedList,endState);
+            break;
+        }
+        depth++;
     }
 }
 
 bool Solver::solveBFS()
 {
+    path.clear();
+    pathString.clear();
     vector<Board>openList; // list to search
     vector<Board>closedList;
     map<Board,Board>cameFrom; // path
@@ -81,7 +124,6 @@ bool Solver::solveBFS()
             current = openList.front();
             if(openList.back() == endState)
             {
-                //qDebug() << "Graph size: " << cameFrom.size();
                 constructPath(cameFrom,endState);
                 break;
             }
@@ -91,7 +133,6 @@ bool Solver::solveBFS()
             {
                 if(!exists(closedList,i))
                 {
-                    //qDebug() << "Curr:\n" << current << endl << i;
                     cameFrom.insert(pair<Board,Board>(i,current));
                     openList.push_back(i);
                     if(i == endState)
@@ -108,6 +149,8 @@ bool Solver::solveBFS()
 
 bool Solver::solveDFS()
 {
+    path.clear();
+    pathString.clear();
     vector<Board>openList; // list to search
     map<Board,Board>cameFrom; // path
     openList.push_back(startState);
@@ -144,6 +187,8 @@ bool Solver::solveDFS()
 
 bool Solver::solveAStar()
 {
+    path.clear();
+    pathString.clear();
     bool endFound = false;
     vector<Board>openList;
     vector<Board>closedList;

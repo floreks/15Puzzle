@@ -4,7 +4,8 @@
 #include <vector>
 #include <cmath>
 #include <assert.h>
-#include <ostream>
+#include <iostream>
+#include <QDebug>
 
 using namespace std;
 
@@ -54,7 +55,7 @@ public:
 protected:
 
     // Overloaded operators //
-    //friend QDebug operator<<(QDebug d, const Board &s);
+    friend QDebug operator<<(QDebug d, const Board &s);
     friend ostream &operator<<(ostream &os, const Board &s);
     friend bool operator==(const Board &s1, const Board  &s2);
     friend bool operator<(const Board &s1, const Board &s2);
