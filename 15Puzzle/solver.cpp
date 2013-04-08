@@ -1,8 +1,9 @@
 #include "solver.h"
-#include <QDebug>
 
 Solver::Solver(Board start)
 {
+    strategyID = 1;
+    heuristicID = 1;
     startState = start;
     vector<BYTE>state(start.getSize());
     for(WORD i=0;i<state.size()-1;i++)
@@ -29,13 +30,28 @@ void Solver::setBoard(Board start)
 int Solver::getLowestCost(vector<Board> &states)
 {
     int pos = 0;
-    int min = states[0].manhattan();
-    for(WORD i=1;i<states.size();i++)
-        if(min > states[i].manhattan())
-        {
-            min = states[i].manhattan();
-            pos = i;
-        }
+
+
+    if(heuristicID==1) //manhattan
+    {
+        int min = states[0].manhattan();
+        for(WORD i=1;i<states.size();i++)
+            if(min > states[i].manhattan())
+            {
+                min = states[i].manhattan();
+                pos = i;
+            }
+    }
+    else //linear
+    {
+        int min = states[0].linear();
+        for(WORD i=1;i<states.size();i++)
+            if(min > states[i].linear())
+            {
+                min = states[i].linear();
+                pos = i;
+            }
+    }
     return pos;
 }
 
@@ -70,7 +86,7 @@ void Solver::constructPath(map<Board, Board> &cameFrom, Board &node)
     }
 }
 
-Board Solver::DLS(Board &node, Board &endNode, WORD depth)
+Board Solver::DLS(Board &node, Board &endNode, WORD depth, string order)
 {
     Board board;
     if(node == endState && depth == 0)
@@ -79,17 +95,17 @@ Board Solver::DLS(Board &node, Board &endNode, WORD depth)
         return node;
     }
     else if(depth > 0)
-        for(Board &i : node.neighbors())
+        for(Board &i : node.neighbors(order))
         {
             linkedList.insert(pair<Board,Board>(i,node));
-            DLS(i,endNode,depth-1);
+            DLS(i,endNode,depth-1,order);
         }
     if(IDFSend)
         return endNode;
     return board;
 }
 
-bool Solver::solveIDFS()
+bool Solver::solveIDFS(string order)
 {
     path.clear();
     pathString.clear();
@@ -98,7 +114,7 @@ bool Solver::solveIDFS()
     Board result;
     while(depth < 8)
     {
-        result = DLS(startState,endState,depth);
+        result = DLS(startState,endState,depth,order);
         if(result == endState && !result.isEmpty())
         {
             constructPath(linkedList,endState);
@@ -108,7 +124,7 @@ bool Solver::solveIDFS()
     }
 }
 
-bool Solver::solveBFS()
+bool Solver::solveBFS(string order)
 {
     path.clear();
     pathString.clear();
@@ -129,7 +145,7 @@ bool Solver::solveBFS()
             }
             openList.erase(openList.begin());
             closedList.push_back(current);
-            for(Board &i : current.neighbors())
+            for(Board &i : current.neighbors(order))
             {
                 if(!exists(closedList,i))
                 {
@@ -147,7 +163,7 @@ bool Solver::solveBFS()
     return 0;
 }
 
-bool Solver::solveDFS()
+bool Solver::solveDFS(string order)
 {
     path.clear();
     pathString.clear();
@@ -162,15 +178,13 @@ bool Solver::solveDFS()
             current = openList.back();
             if(exists(openList,endState))
             {
-                //qDebug() << "Graph size: " << cameFrom.size();
                 constructPath(cameFrom,endState);
                 break;
             }
-            for(Board &i : current.neighbors())
+            for(Board &i : current.neighbors(order))
             {
                 if(!exists(openList,i))
                 {
-                    //qDebug() << "Curr:\n" << current << endl << i;
                     cameFrom.insert(pair<Board,Board>(i,current));
                     openList.push_back(i);
                     if(i == endState)
@@ -185,8 +199,11 @@ bool Solver::solveDFS()
     return 0;
 }
 
-bool Solver::solveAStar()
+bool Solver::solveAStar(int sid, int hid)
 {
+    heuristicID = hid;
+    strategyID = sid;
+
     path.clear();
     pathString.clear();
     bool endFound = false;
@@ -206,7 +223,6 @@ bool Solver::solveAStar()
             current = openList[lowestCostPos];
             if(current == endState || endFound)
             {
-                //qDebug() << "Graph size: " << cameFrom.size();
                 constructPath(cameFrom,endState);
                 break;
             }

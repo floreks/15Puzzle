@@ -5,7 +5,6 @@
 #include <cmath>
 #include <assert.h>
 #include <iostream>
-#include <QDebug>
 
 using namespace std;
 
@@ -38,9 +37,11 @@ public:
     ~Board(){}
     // -------------------------- //
     int manhattan();
+    int linear();
     bool swapElements(int index, int index2);
     bool isSolvable();
     vector<Board> neighbors();
+    vector<Board> neighbors(string order);
     bool isEmpty()const{return state.empty()==1;}
     void clear(){state.clear();}
     int getSize()const{return state.size();}
@@ -55,7 +56,6 @@ public:
 protected:
 
     // Overloaded operators //
-    friend QDebug operator<<(QDebug d, const Board &s);
     friend ostream &operator<<(ostream &os, const Board &s);
     friend bool operator==(const Board &s1, const Board  &s2);
     friend bool operator<(const Board &s1, const Board &s2);

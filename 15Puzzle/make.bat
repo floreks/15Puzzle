@@ -1,0 +1,1 @@
+g++ main.cpp board.cpp solver.cpp -std=c++0x -o 15.exe

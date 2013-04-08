@@ -66,7 +66,7 @@ int main(int argc, char *argv[])
             }
             board.setBoard(boardIn);
             solver.setBoard(board);
-            solver.solveAStar();
+            solver.solveAStar(strategyID,heuristicID);
             cout << endl;
             if(board.isSolvable())
             {
@@ -101,7 +101,7 @@ int main(int argc, char *argv[])
                     }
                     board.setBoard(boardIn);
                     solver.setBoard(board);
-                    solver.solveBFS();
+                    solver.solveBFS(order);
                     cout << endl;
                     if(board.isSolvable())
                     {
@@ -133,7 +133,7 @@ int main(int argc, char *argv[])
                     }
                     board.setBoard(boardIn);
                     solver.setBoard(board);
-                    solver.solveDFS();
+                    solver.solveDFS(order);
                     cout << endl;
                     if(board.isSolvable())
                     {
@@ -169,7 +169,7 @@ int main(int argc, char *argv[])
                         }
                         board.setBoard(boardIn);
                         solver.setBoard(board);
-                        solver.solveIDFS();
+                        solver.solveIDFS(order);
                         cout << endl;
                         if(board.isSolvable())
                         {

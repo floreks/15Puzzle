@@ -13,19 +13,20 @@ private:
     map<Board,Board>linkedList;
     string pathString;
     bool IDFSend;
-
+    int strategyID;
+    int heuristicID;
     int getLowestCost(vector<Board>&states);
     bool exists(vector<Board>&states, const Board &board);
     void constructPath(map<Board, Board> &cameFrom, Board &node);
     map<Board,Board>::iterator find(map<Board, Board> &cameFrom, Board &node);
-    Board DLS(Board &node, Board &endNode, WORD depth);
+    Board DLS(Board &node, Board &endNode, WORD depth, string order);
 public:
     Solver(Board start);
     Solver(){}
-    bool solveAStar();
-    bool solveIDFS();
-    bool solveDFS();
-    bool solveBFS();
+    bool solveAStar(int sid, int hid);
+    bool solveIDFS(string order);
+    bool solveDFS(string order);
+    bool solveBFS(string order);
     vector<Board> getPath()const{return path;}
     string getPathString()const{return pathString;}
     void setBoard(Board start);

@@ -101,9 +101,9 @@ bool Board::swapElements(int index, int index2)
     return 1;
 }
 
-/*
- * Returns sum of Manhattan distances between blocks and goal
- **/
+/* Returns sum of Manhattan distances between blocks and goal,
+ * which is counted by summing up distances to end state for all puzzles
+ */
 
 int Board::manhattan()
 {
@@ -127,6 +127,20 @@ int Board::manhattan()
             }
         }
     }
+    return sum;
+}
+
+/* Returns count of all misplaced puzzles
+ */
+
+int Board::linear()
+{
+    int sum = 0;
+
+    for(WORD i=0;i<state.size();i++)
+        if(state[i]!=(i+17)%(state.size())) // dla 0 1 2 ... 15 mamy 1 2 3 ... 0
+            sum++;
+
     return sum;
 }
 
@@ -181,6 +195,46 @@ vector<Board> Board::neighbors()
     return result;
 }
 
+vector<Board> Board::neighbors(string order)
+{
+    vector<Board>result;
+    Board tmp;
+
+    for(int i=0;i<order.size();i++)
+    {
+        if(order[i]=='D' || order[i]=='d')
+        {
+            tmp = moveUp();
+            tmp.setPositon('D'); //dol
+            if(!tmp.isEmpty())
+                result.push_back(tmp);
+        }
+        if(order[i]=='G' || order[i]=='g')
+        {
+            tmp = moveDown();
+            tmp.setPositon('G'); //gora
+            if(!tmp.isEmpty())
+                result.push_back(tmp);
+        }
+        if(order[i]=='L' || order[i]=='l')
+        {
+            tmp = moveRight();
+            tmp.setPositon('L'); //lewo
+            if(!tmp.isEmpty())
+                result.push_back(tmp);
+        }
+        if(order[i]=='P' || order[i]=='p')
+        {
+            tmp = moveLeft();
+            tmp.setPositon('P'); //prawo
+            if(!tmp.isEmpty())
+                result.push_back(tmp);
+        }
+    }
+
+    return result;
+}
+
 void Board::setBoard(vector<BYTE> tab)
 {
     zeroPosition = 0xFFFF;
@@ -199,13 +253,6 @@ void Board::setBoard(vector<BYTE> tab)
 
 // ----------------------------------------- //
 
-QDebug operator<<(QDebug d, const Board &s)
-{
-    for(WORD i=0;i<s.state.size();i++)
-        d.nospace() << static_cast<WORD>(s.state[i]) << (i%s.sqrtSize == s.sqrtSize-1 && i ? '\n' : ' ');
-    return d;
-}
-
 bool operator==(const Board &s1, const Board &s2)
 {
     for(WORD i=0;i<s1.state.size();i++)
@@ -222,7 +269,7 @@ bool operator<(const Board &s1, const Board &s2)
 ostream &operator<<(ostream &os, const Board &s)
 {
     for(WORD i=0;i<s.state.size();i++)
-            os << static_cast<WORD>(s.state[i]) << (i%s.sqrtSize == s.sqrtSize-1 && i ? '\n' : ' ');
+        os << static_cast<WORD>(s.state[i]) << (i%s.sqrtSize == s.sqrtSize-1 && i ? '\n' : ' ');
     os << endl;
-        return os;
+    return os;
 }
