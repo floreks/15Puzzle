@@ -33,6 +33,7 @@ private:
     int rowCount, columnCount;
     int step;
     string moves;
+    bool firstDraw;
 };
 
 #endif // MAINWINDOW_H

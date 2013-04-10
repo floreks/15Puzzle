@@ -1,18 +1,35 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+
+#include <iostream>
+#include <fstream>
 #include <vector>
 #include <QTime>
+#include <QFileDialog>
+#include <QTextStream>
+
+using namespace std;
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
-    //przykladowe zmienne do wczytania
-    rowCount = columnCount = 4;
+    //okienko do wczytywania grafu i rozwiazania
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"),"",tr("Files (*.*)"));
+    QFile file(fileName);
+    if(!file.open( QIODevice::ReadWrite | QIODevice::Text) || fileName=="") this->close(); //do poprawy
+    QString move;
+    double value;
+    QTextStream in(&file);
+    in >> rowCount >> columnCount;
+    for(int i=0; i<rowCount*columnCount; i++)
+    {
+        in >> value;
+        board.push_back(value);
+    }
+    in >> move;
+    moves = move.toStdString();
+    file.close();
     step = 0;
-    moves = "PPP";
-    board.push_back(1); board.push_back(2); board.push_back(3); board.push_back(4);
-    board.push_back(5); board.push_back(6); board.push_back(7); board.push_back(8);
-    board.push_back(9); board.push_back(10); board.push_back(11); board.push_back(12);
-    board.push_back(0); board.push_back(13); board.push_back(14); board.push_back(15);
+    firstDraw = true;
 
     //ustawienie okna glownego
     ui->setupUi(this);
@@ -61,21 +78,22 @@ void MainWindow::draw()
         if(board[i]!=0)*str = "  " + QString::number(board[i]);
         else *str = " ";
         QTableWidgetItem *txt = new QTableWidgetItem(*str);
-
         ui->tableWidget->setItem(i/columnCount,i%rowCount,txt);
     }
     delete str;
 
-    //aktualizowac label!
+    if(!firstDraw)
+    {
+        QString steps = "Step: " + QString::number(step) + "/" + QString::number(moves.size());
+        ui->label->setText(steps);
+    }
+    else firstDraw = false;
 }
 
 int MainWindow::zeroPosition()
 {
     int zeroPosition = 0;
-    for(int i=0; i<board.size(); i++)
-    {
-        if(board[i]==0) zeroPosition = i;
-    }
+    for(int i=0; i<board.size(); i++) if(board[i]==0) zeroPosition = i;
     return zeroPosition;
 }
 
@@ -110,15 +128,36 @@ void MainWindow::forward()
 
 void MainWindow::backward()
 {
-    //analogicznie jw.
-
     step--;
+    if(moves[step]=='L') //cofamy przeniesienie w lewo
+    {
+        int zero = zeroPosition();
+        board[zero] = board[zero+1];
+        board[zero+1] = 0;
+    }
+    if(moves[step]=='P') //cofamy przeniesienie w prawo
+    {
+        int zero = zeroPosition();
+        board[zero] = board[zero-1];
+        board[zero-1] = 0;
+    }
+    if(moves[step]=='G') //cofamy przeniesienie w gore
+    {
+        int zero = zeroPosition();
+        board[zero] = board[zero+columnCount];
+        board[zero+columnCount] = 0;
+
+    }
+    if(moves[step]=='D') //cofamy przeniesienie w dol
+    {
+        int zero = zeroPosition();
+        board[zero] = board[zero-columnCount];
+        board[zero-columnCount] = 0;
+    }
 }
 
 void MainWindow::on_pushButton_clicked()
 {
-    //okienko do wczytywania grafu i rozwiazania
-
     ui->checkBox->setDisabled(true);
     ui->pushButton->setDisabled(true);
 
@@ -128,18 +167,13 @@ void MainWindow::on_pushButton_clicked()
         {
             QTime t;
             t.start();
-            while(t.elapsed() < 1000)
-            {
-                QCoreApplication::processEvents(QEventLoop::AllEvents, 1000-t.elapsed());
-            }
+            while(t.elapsed() < 1000) QCoreApplication::processEvents(QEventLoop::AllEvents, 1000-t.elapsed());
             forward();
             draw();
         }
+        ui->pushButton_3->setEnabled(true);
     }
-    else
-    {
-        ui->pushButton_2->setEnabled(true);
-    }
+    else ui->pushButton_2->setEnabled(true);
 }
 
 void MainWindow::on_pushButton_2_clicked()
